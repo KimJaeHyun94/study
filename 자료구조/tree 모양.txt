@@ -1,0 +1,193 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include<Windows.h>
+#include<conio.h>
+struct node{
+	int				data;
+	int				key;
+	struct node *	left_link;
+	struct node *	right_link;
+};typedef struct node Tree;
+
+void gotoxy(int x,int y);
+Tree* get_node();
+void Tree_ins(Tree** root, int data);
+void L_P(Tree *root,int k,int k1);
+void R_P(Tree * root,int k,int k1);
+void print_data(Tree *root);
+
+Tree* delete_Tree(Tree *root, int x);
+Tree *find_min(Tree* root);
+void postorder(Tree *root);
+void inorder(Tree * root);
+void preorder(Tree *root);
+int Tree_search(Tree *root, int data);
+void Tree_ins(Tree** root, int data);
+
+void main(){
+	int test[20]={45,62};
+	Tree *root=NULL;int i,data;
+	int num=0,num1=0;
+	for(i=0;test[i]>0;i++)
+		Tree_ins(&root, test[i]);
+	
+	do{
+		print_data(root);
+		printf("1.data 추가\n");
+		printf("2.data 삭제\n");
+		printf("3.preorder\n");
+		printf("4.inorder\n");
+		printf("5.postorder\n");
+		printf("6.data 검색\n");
+		printf("7.종료\n");
+		printf(">>>>>  ");
+		scanf("%d",&num);
+		if(num==1)	{printf("data 입력 :");scanf("%d",&data);Tree_ins(&root,data);}
+		if(num==6)	{printf("input data :");scanf("%d",&data);Tree_search(root,data);}
+		if(num==3)	preorder(root);
+		if(num==4)	inorder(root);
+		if(num==5)	postorder(root);
+		if(num==2){
+			printf("삭제할 데이터 입력 : ");
+			scanf("%d",&num1);
+			root=delete_Tree(root,num1);
+		}
+		system("pause");
+		system("cls");
+	}while(num!=7);
+}
+
+void gotoxy(int x,int y){	
+	COORD pos={x,y};
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos); 
+}
+Tree* get_node(){
+	Tree *tmp;
+	tmp=(Tree*)malloc(sizeof(Tree));
+	tmp->left_link =NULL;
+	tmp->right_link=NULL;
+	return tmp;
+}
+void L_P(Tree *root,int k,int k1){
+	if(!root)	return ;
+	gotoxy(k-=5,k1+=2);
+	printf("%d",root->data);
+	if(root->left_link)		L_P(root->left_link,k,k1);
+	if(root->right_link)	R_P(root->right_link,k,k1);
+}
+void R_P(Tree * root,int k,int k1){
+	if(!root)	return ;
+	gotoxy(k+=5,k1+=2);
+	printf("%d",root->data);
+	if(root->right_link)	R_P(root->right_link,k,k1);
+	if(root->left_link)		L_P(root->left_link,k,k1);
+	k-=5;k1-=2;
+}
+void print_data(Tree *root){
+	int k=40,k1=0;
+	if(!root)	return ;
+	if(root->left_link&&root->right_link){
+		gotoxy(k-=5,k1+=2);
+		printf("%d",root->data);
+		L_P(root->left_link,k,k1);
+		R_P(root->right_link,k,k1);
+		gotoxy(0,10);
+	}
+	else if(root->right_link){
+		gotoxy(k-=5,k1+=2);
+		printf("%d",root->data);
+		R_P(root->right_link,k,k1);
+		gotoxy(0,10);
+	}else{
+		gotoxy(k-=5,k1+=2);
+		printf("%d",root->data);
+		L_P(root->left_link,k,k1);
+		gotoxy(0,10);
+	}
+}
+Tree *find_min(Tree* root)
+{
+     if (root == NULL)  return  NULL;
+     if (root->left_link == NULL )  return root;
+                  else     return ( find_min (root->left_link ) );                     
+}
+Tree* delete_Tree(Tree *root, int x)
+ {
+    Tree *temp, *child;
+	if (root == NULL)  printf("삭제할 데이터가 없습니다\n");
+    else  if (x < root->data)
+		root->left_link = delete_Tree(root->left_link, x );
+    else  if (x > root->data)
+		 root->right_link = delete_Tree(root->right_link, x );
+    else  if (root->right_link) {
+			temp  =  find_min(root->right_link);
+			root->data  =  temp->data; 
+			root->right_link  = delete_Tree(root->right_link, root->data);
+     }
+    else{
+             temp  =  root;
+             if (root->left_link == NULL)    child  =  root->right_link; 
+             if (root->right_link == NULL)  child  =  root->left_link;
+             free(temp);         
+			 return  child;
+     }
+     return  root;
+ }
+void preorder(Tree *root)
+{
+		if(root)
+		{	
+			printf("%d ", root->data);
+			preorder(root->left_link);
+			preorder(root->right_link);
+		}
+}
+void inorder(Tree * root)
+{
+		if(root)
+		{
+			inorder(root->left_link);
+			printf("%d ", root->data);
+			inorder(root->right_link);
+		}
+}
+void postorder(Tree *root)
+{
+		if(root)
+		{
+			postorder(root->left_link);
+			postorder(root->right_link);
+			printf("%d ", root->data);
+		}
+}
+int Tree_search(Tree *root, int data)
+{
+	if (root==NULL)
+	{
+		printf("%d 존재하지 않습니다.",data);
+		return 0;
+	}
+	if((root)->data> data)
+		Tree_search((root)->left_link , data);
+	else if((root)->data== data){
+		printf("%d 는 존재합니다\n",data);
+		return data;}
+	else
+		Tree_search((root)->right_link , data);
+}
+void Tree_ins(Tree** root, int data)
+{
+	if (*root==NULL)
+	{
+		*root=get_node();
+		(*root)->data=data;
+		return;
+	}if((*root)->data==data){
+		printf("입력하신 %d 존재 합니다\n",data);
+		return ;
+	}
+	if((*root)->data> data)
+		Tree_ins(&(*root)->left_link, data);
+	else
+		Tree_ins(&(*root)->right_link, data);
+}

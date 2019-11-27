@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <string.h>
+#include <windows.h>
+#include <stdlib.h>
+#define NUM 100
+struct user {
+	char id[8];
+	char password[16];
+};
+int checkUser(struct user ** stu, char *inputId, char *inputPassword, int * num)
+{
+	int i;
+
+	for (i = 0; i<*num; i++) {
+		if (!strcmp(stu[i]->id, inputId))
+			if (!strcmp(stu[i]->password, inputPassword))
+				return 1;
+			else {
+				printf("틀렸습니다!!!\n");
+				return 0;
+			}
+	}
+
+	if (i ==*num)
+		printf("등록되지 않은 ID 입니다.\n");
+
+	return 0;
+}
+
+int addUser(struct user ** stu, char *inputID, char * inputPassword, int * num){
+	int i;
+	if ((*num) != 0) {
+		for (i = 0; i < (*num); i++) {
+			if (!strcmp(stu[i]->id, inputID)) {
+				printf("등록된 ID 입니다.\n");
+				return 0;
+			}
+		}
+	}
+	stu[*num] = (struct user * )malloc(sizeof(struct user));
+	strcpy(stu[*num]->id, inputID);
+	strcpy(stu[*num]->password, inputPassword);
+	(*num)++;
+	return 1;
+}
+int delUser(struct user ** stu, char *inputID, char * inputPassword, int * num) {
+	int i;
+	if (num != 0) {
+		for (i = 0; i < *num; i++) {
+			if (!strcmp(stu[i]->id, inputID)) {
+				free(stu[i]);
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+int main()
+{
+	struct user * stu[NUM] = { 0 };
+	int option, i, num=0;
+	char inputID[8];
+	char inputPassword[16];
+	while (1) {
+		system("cls");
+		printf("원하는 기능을 선택하세요.\n");
+		printf("1. 로그온 \n");
+		printf("2. 회원 가입\n");
+		printf("3. 회원 탈퇴\n");
+		printf("4. 종료\n");
+		printf("Select...");
+		scanf("%d", &option);
+		getchar();
+		if (option < 0 || option > 4)
+			continue;
+		switch (option) {
+		case 1:
+			printf("ID : ");
+			gets(inputID);
+			printf("Password : ");
+			gets(inputPassword);
+
+			if (!checkUser(stu, inputID, inputPassword, &num)) {
+				system("pause");
+				continue;
+			}
+			printf("인증을 통과했습니다.\n");
+			printf("감사합니다.\n");
+			system("pause");
+			break;
+		case 2:
+			printf("ID : ");
+			gets(inputID);
+			printf("Password : ");
+			gets(inputPassword);
+			if (addUser(stu, inputID, inputPassword, &num)) {
+				printf("\n등록 성공\n");
+				system("pause");
+				continue;
+			}
+			printf("등록 실패\n");
+			system("pause");
+			break;
+		case 3:
+			printf("ID : ");
+			gets(inputID);
+			fflush(stdin);
+			printf("Password : ");
+			gets(inputPassword);
+
+			if (delUser(stu, inputID, inputPassword, &num)) {
+				printf("\n탈퇴 성공\n");
+				system("pause");
+				continue;
+			}
+			printf("탈퇴 실패\n");
+			system("pause");
+			break;
+		case 4:
+			return 0;
+		case 0:
+			for (i = 0; i<NUM; i++) {
+				if (stu[i]->id == NULL) {
+					printf("\n%3d ID: %s\n", i, stu[i]->id);
+					printf("    PW: %s\n", stu[i]->password);
+				}
+			}
+			system("pause");
+			break;
+		}
+	}
+
+	return 0;
+}

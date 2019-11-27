@@ -1,0 +1,5 @@
+﻿  소스2.c
+c:\users\user\documents\visual studio 2017\projects\consoleapplication26\consoleapplication26\소스2.c(121): warning C4013: 'gets'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+c:\users\user\documents\visual studio 2017\projects\consoleapplication26\consoleapplication26\소스2.c(122): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  ConsoleApplication26.vcxproj -> C:\Users\User\documents\visual studio 2017\Projects\ConsoleApplication26\Debug\ConsoleApplication26.exe
+  ConsoleApplication26.vcxproj -> C:\Users\User\documents\visual studio 2017\Projects\ConsoleApplication26\Debug\ConsoleApplication26.pdb (Partial PDB)

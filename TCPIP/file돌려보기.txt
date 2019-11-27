@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+typedef struct st {
+	char name[20];
+	char addr[50];
+	int age;
+}ST;
+ST*func() {
+	ST*p;
+	p = (ST*)malloc(sizeof(ST));
+	printf("이름을 입력하세요 :");
+	scanf("%s", p->name);
+	printf("주소를 입력하세요 :");
+	scanf("%s", p->addr);
+	printf("나이를 입력하세요 :");
+	scanf("%d", &p->age);
+	return p;
+}
+int main(int argc, char* argv[])
+{
+	ST*p;
+	ST s;
+	p = func();
+	FILE*fp = fopen("c:\\test\\data.txt", "w");
+	if (fp == NULL)
+	{
+		printf("File open error...\n");
+		return 0;
+	}
+	fwrite(p, sizeof(ST), 1, fp);
+	free(p);
+	fclose(fp);
+
+	fp = fopen("c:\\test\\data.txt", "r");
+	if (fp == NULL)
+	{
+		printf("File open error...\n");
+		return 0;
+	}
+
+	fread(&s, sizeof(ST), 1, fp);
+	printf("이름 : %s\n주소 : %s\n나이 : %d\n", s.name, s.addr, s.age);
+	fclose(fp);
+	return 0;
+}
+

@@ -1,0 +1,199 @@
+★파일 주고받기
+client) FILE*fp;
+        char str[20]="GOOD LUCK";
+        fp=fopen("c:\\question.txt","wb");
+    if(fp==NULL)
+	{
+		printf("flie error!\n");
+		return 0;
+	}
+	fwrite(str,1,strlen(str)+1,fp);
+	fclose(fp);
+
+	char *ch;
+    fp=fopen("c:\\question.txt","rb");
+    if(fp==NULL)
+	{
+		printf("flie error!\n");
+		return 0;
+	}
+    fseek(fp,0,SEEK_END);
+	int len=ftell(fp);
+	fseek(fp,0,SEEK_SET);
+    printf("%d\n",len);
+	ch=(char*)malloc(len);
+	sendto(tcp_sock,(char*)&len,sizeof(int),0,(sockaddr*)&addr,sizeof(addr));
+	fread(ch,1,len,fp);
+	sendto(tcp_sock,ch,len,0,(sockaddr*)&addr,sizeof(addr));
+    free(ch); fclose(fp);
+
+server) FILE*fp;
+          fp=fopen("c:\\question.txt","w");
+	if(fp==NULL)
+	{
+		printf("flie error!\n");
+		return 0;
+	}
+        char*ch; int len;
+	recvfrom(tcp_sock,(char*)&len,sizeof(int),0,(sockaddr*)&clt,&size);
+	len=(int)len;
+	ch=(char*)malloc(len);
+	printf("%d\n",len);
+	recvfrom(tcp_sock,ch,len,0,(sockaddr*)&clt,&size);
+	fwrite(ch,1,len,fp);
+	free(ch); fclose(fp);
+★ip-port주소 알아내기
+            printf("%d\n",ntohs(clt.sin_port));
+	printf("%s\n",inet_ntoa(clt.sin_addr));
+★에코
+client)	char ask[20]="hello"; 
+	char k[20];
+	sendto(tcp_sock,ask,strlen(ask)+1,0,(sockaddr*)&addr,sizeof(addr));
+	recvfrom(tcp_sock,k,strlen(k)+1,0,(sockaddr*)&addr,&kong);
+	printf("%s\n",k);
+
+server)   char ask[20];
+	recvfrom(tcp_sock,ask,strlen(ask)+1,0,(sockaddr*)&clt,&size);
+	sendto(tcp_sock,ask,strlen(ask)+1,0,(sockaddr*)&clt,sizeof(clt));
+	printf("%s\n",ask);
+
+★계산기
+client)
+	int a,b;
+	char op; int result; double nanu;
+             printf("계산하고 싶은 두 수와 수식을 입력하세요 : ");
+	scanf("%d%c%d", &a,&op,&b);
+	sendto(tcp_sock,(char*)&a,sizeof(int),0,(sockaddr*)&addr,sizeof(addr));
+	sendto(tcp_sock,(char*)&b,sizeof(int),0,(sockaddr*)&addr,sizeof(addr));
+            sendto(tcp_sock,(char*)&op,sizeof(char),0,(sockaddr*)&addr,sizeof(addr));
+	if(op !='/'){
+		recvfrom(tcp_sock,(char*)&result,sizeof(int),0,(sockaddr*)&addr,&kong);
+		printf("%d%c%d=%d입니다\n",a,op,b,result);
+	}
+	else{
+		if(b==0)
+		{
+			printf("나눗셈 오류입니다 !\n");
+			return 0;
+        }
+		else{
+        recvfrom(tcp_sock,(char*)&nanu,sizeof(double),0,(sockaddr*)&addr,&kong);
+        printf("%d%c%d=%.2f입니다\n",a,op,b,nanu);
+		}
+	}
+
+server)   char op; int a,b; int result;
+	recvfrom(tcp_sock,(char*)&a,sizeof(int),0,(sockaddr*)&clt,&size);
+	recvfrom(tcp_sock,(char*)&b,sizeof(int),0,(sockaddr*)&clt,&size);
+	recvfrom(tcp_sock,(char*)&op,sizeof(char),0,(sockaddr*)&clt,&size);
+	switch(op){
+	case '+' :
+		result=a+b;
+		sendto(tcp_sock,(char*)&result,sizeof(int),0,(sockaddr*)&clt,sizeof(clt));
+		break;
+	case '-' :
+		result=a-b;
+		sendto(tcp_sock,(char*)&result,sizeof(int),0,(sockaddr*)&clt,sizeof(clt));
+		break;
+	case '*' :
+		result=a*b;
+		sendto(tcp_sock,(char*)&result,sizeof(int),0,(sockaddr*)&clt,sizeof(clt));
+		break;
+    case '/' :
+	    double nanu;
+		if(b==0)
+		{
+		    printf("나눗셈 오류!\n");
+			break;
+        }
+		else{
+		nanu=a/b;
+		sendto(tcp_sock,(char*)&nanu,sizeof(double),0,(sockaddr*)&clt,sizeof(clt));
+		}
+		break;
+	default :
+		break;
+    }
+★계산기 (구조체로 하기)
+client) struct test{
+	int a;
+	char op;
+	int b;
+};
+
+	struct test TEST;
+    int result; double nanu;
+             printf("계산하고 싶은 두 수와 수식을 입력하세요 : ");
+	scanf("%d%c%d",&TEST.a ,&TEST.op,&TEST.b);
+	sendto(tcp_sock,(char*)&TEST,sizeof(TEST),0,(sockaddr*)&addr,sizeof(addr));
+
+	if(TEST.op!='/'){
+		recvfrom(tcp_sock,(char*)&result,sizeof(int),0,(sockaddr*)&addr,&kong);
+		printf("%d%c%d=%d입니다\n",TEST.a,TEST.op,TEST.b,result);
+	}
+	else{
+		if(TEST.b==0)
+		{
+			printf("나눗셈 오류입니다 !\n");
+			return 0;
+        }
+		else{
+        recvfrom(tcp_sock,(char*)&nanu,sizeof(double),0,(sockaddr*)&addr,&kong);
+        printf("%d%c%d=%.2f입니다\n",TEST.a,TEST.op,TEST.b,nanu);
+		}
+	}
+
+server)
+struct test{
+	int a;
+	char op;
+	int b;
+};
+struct test TEST;
+	int result;
+	recvfrom(tcp_sock,(char*)&TEST,sizeof(TEST),0,(sockaddr*)&clt,&size);
+	switch(TEST.op){
+	case '+' :
+		result=TEST.a+TEST.b;
+		sendto(tcp_sock,(char*)&result,sizeof(int),0,(sockaddr*)&clt,sizeof(addr));
+		break;
+	case '-' :
+		result=TEST.a-TEST.b;
+		sendto(tcp_sock,(char*)&result,sizeof(int),0,(sockaddr*)&clt,sizeof(addr));
+		break;
+	case '*' :
+		result=TEST.a*TEST.b;
+		sendto(tcp_sock,(char*)&result,sizeof(int),0,(sockaddr*)&addr,sizeof(addr));
+		break;
+    case '/' :
+	    double nanu;
+		if(TEST.b==0)
+		{
+			int error=0;
+			sendto(tcp_sock,(char*)&error,sizeof(int),0,(sockaddr*)&clt,sizeof(addr));
+			break;
+        }
+		else
+		nanu=TEST.a/TEST.b;
+		sendto(tcp_sock,(char*)&nanu,sizeof(double),0,(sockaddr*)&clt,sizeof(addr));
+		printf("%f\n",nanu);
+		break;
+	default :
+		break;
+    }
+
+★현재시간
+client) int hour,min,sec;
+	recvfrom(tcp_sock,(char*)&hour,sizeof(int),0,(sockaddr*)&addr,&kong);
+	recvfrom(tcp_sock,(char*)&min,sizeof(int),0,(sockaddr*)&addr,&kong);
+	recvfrom(tcp_sock,(char*)&sec,sizeof(int),0,(sockaddr*)&addr,&kong);
+	printf("%02d시 %02d분 %02d초\n",hour,min,sec);
+
+server)time_t nowTime = time(NULL);
+    struct tm * pTmNow = localtime(&nowTime);
+    if(pTmNow)
+    printf("%02d시 %02d분 %02d초\n", pTmNow->tm_hour, pTmNow->tm_min, pTmNow->tm_sec);
+	sendto(tcp_sock,(char*)(&pTmNow->tm_hour),sizeof(int),0,(sockaddr*)&clt,sizeof(clt));
+    sendto(tcp_sock,(char*)(&pTmNow->tm_min),sizeof(int),0,(sockaddr*)&clt,sizeof(clt));
+    sendto(tcp_sock,(char*)(&pTmNow->tm_sec),sizeof(int),0,(sockaddr*)&clt,sizeof(clt));
+

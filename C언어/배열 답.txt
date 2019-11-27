@@ -1,0 +1,35 @@
+#include<stdio.h>
+void main(){
+	int arr[10]={10,17,3,9,27,10,8,9,13,21};//arr 입력
+	int i,j=10,invert_arr[10];
+	int sort_arr[10];
+	int odd=0,even=0,tmp;
+
+	for(i=0;i<10;i++){
+		j--;
+		invert_arr[i]=arr[j]; //거꾸로 정렬
+	}
+	for(i=0;i<10;i+=2) 	//홀수 합
+		odd+=arr[i];
+	for(i=1;i<10;i+=2)	//짝수의 합
+		even+=arr[i];
+	printf("%d-%d=%d\n",even,odd,even-odd); 
+
+	for(i=0;i<10;i++)		//내림차순
+		sort_arr[i]=arr[i];
+	for(i=0;i<9;i++){			
+		for(j=i+1;j<10;j++){
+			if(arr[i]<arr[j]){
+				tmp=arr[i];
+				arr[i]=arr[j];
+				arr[j]=tmp;
+				sort_arr[i]=arr[i];
+			}
+		}
+
+	}
+	if(i==9)
+				sort_arr[9]=arr[9];
+	for(i=0;i<10;i++)
+		printf("%d ",sort_arr[i]);
+}

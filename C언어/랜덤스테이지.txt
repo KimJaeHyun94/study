@@ -1,0 +1,41 @@
+#include<stdio.h>
+#include<time.h>
+#include<stdlib.h>
+#include<Windows.h>
+
+int main(void) {
+
+	int num;
+	char arr[3][20] = { "오프로드 레이스","시티 레이스","트랙 레이스" };
+	int i = 1;
+	srand ((unsigned)time(NULL));
+	while (1)
+	{
+					
+		for (int j = 0; j < 17; j++) {
+			printf("스테이지를 선택하고 있습니다\n");
+			i = rand() % 3;
+			printf("%s\n", arr[i]);
+			Sleep(300);
+			system("cls");
+			
+		}
+		printf("스테이지를 선택하고 있습니다\n");
+		printf("%s가 선택되었습니다\n", arr[i]);
+		printf("게임 실행 => 1 .yes, 2.no : ");
+		scanf_s("%d", &num);
+
+		if(num == 2)
+		{
+			printf("스테이지를 다시 선택합니다\n");
+			Sleep(500);
+			system("cls");
+		}
+		else 
+		{
+			break;
+		}
+		
+	}
+	return 0;
+}

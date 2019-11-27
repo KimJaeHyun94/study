@@ -1,0 +1,50 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define EMPTY 0
+
+typedef struct node {
+	int data;
+	struct node*link;
+}List;
+
+List*get_node() {
+	List*tmp;
+	tmp = (List*)malloc(sizeof(List));
+	tmp->link = EMPTY;
+	return tmp;
+}
+void InsertNode(List**head, int data) {
+	if (*head == EMPTY) {
+		List*tmp;
+		tmp = *head;
+		*head = get_node();
+		(*head)->data = data;
+		(*head)->link = tmp;
+		return;
+	}
+	InsertNode(&(*head)->link, data);
+}
+int DeleteNode(List**head) {
+	List*tmp;
+	tmp = *head;
+	int num;	
+	if (tmp == EMPTY) {
+		return;
+	}
+	num = tmp->data;
+	*head = (*head)->link;
+	return num;
+	free(tmp);
+}
+
+int main()
+{
+	List*head = EMPTY;
+	InsertNode(&head, 10);
+	InsertNode(&head, 20);
+	InsertNode(&head, 30);
+
+	printf("%d\n", DeleteNode(&head));
+	printf("%d\n", DeleteNode(&head));
+	printf("%d\n", DeleteNode(&head));
+}

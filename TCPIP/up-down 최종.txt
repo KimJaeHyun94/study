@@ -1,0 +1,222 @@
+server)
+#include "stdafx.h"
+#pragma comment(lib,"ws2_32")
+#include<winsock2.h>
+#include<stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#include <windows.h>
+START(SOCKET clt_s);
+READ(SOCKET clt_s);
+int main(int argc, char* argv[])
+{
+
+	WSADATA wsa;
+	WSAStartup(MAKEWORD(2,2),&wsa);
+
+	SOCKET tcp_sock=socket(AF_INET,SOCK_STREAM,0);
+	if(tcp_sock==INVALID_SOCKET){
+		printf("º“ƒœ ø°∑Ø!");
+		return 0;
+	}
+	sockaddr_in addr;
+	addr.sin_family=AF_INET;
+	addr.sin_port=htons(12345);
+    addr.sin_addr.S_un.S_addr=inet_addr("192.168.10.133");
+	int error;
+	error=bind(tcp_sock,(sockaddr*)&addr,sizeof(addr));
+	if(error==SOCKET_ERROR)
+	{
+      printf("bind error!");
+      return -1;
+	}
+ 	error=listen(tcp_sock,SOMAXCONN);
+	sockaddr_in cli_addr;
+	int len=sizeof(cli_addr);
+	SOCKET clt_s=accept(tcp_sock,(sockaddr*)&cli_addr,&len);
+	if(clt_s==INVALID_SOCKET){
+		printf("accept error!");
+		return -1;
+	}
+    int k;
+	while(1){
+    recv(clt_s,(char*)&k,sizeof(int),0);
+	switch(k)
+	{
+	case -1 :
+	  printf("º“ƒœ º∫∞¯!\n");
+      closesocket(tcp_sock);	  
+      WSACleanup();
+      return 0; 
+	case 1 :
+		START(clt_s);
+		continue;
+    case 2 :
+		READ(clt_s);
+		continue;
+	}
+	}
+	}
+START(SOCKET clt_s){
+	int answer,n,pos,min,a; int i=0; int j=0; int k=0;
+	srand((unsigned int)time(NULL));
+	answer=rand()%100+1;
+	printf("%d\n", answer);
+	FILE*fp = fopen("c:\\test\\data.txt", "a");
+	if (fp == NULL)
+	{
+		printf("File open error...\n");
+		return 0;
+	}
+	while(1){
+    recv(clt_s,(char*)(&n),sizeof(int),0);
+	i++;
+    if(n<answer){
+		pos=1;
+		send(clt_s,(char*)(&pos),sizeof(int),0);
+		continue;
+    }
+	else if(n>answer){
+		pos=-1;
+	    send(clt_s,(char*)(&pos),sizeof(int),0);
+		continue;
+	}
+	else if(n==answer){
+		pos=0;
+	    send(clt_s,(char*)(&pos),sizeof(int),0);
+			fseek(fp, 0, SEEK_END);
+			fprintf(fp, "%d ", i);
+			fclose(fp);
+			if ((fp = fopen("c:\\test\\data.txt", "r")) == NULL)
+			{
+				printf("File open error...\n");
+				return 0;
+			}
+			min = i;
+			while ((a = fscanf(fp, "%d", &j)) != EOF) {
+				if (min > j)
+					min = j;
+			}
+			Sleep(50);
+			send(clt_s,(char*)(&min),sizeof(int),0);
+			fclose(fp);
+			system("cls");
+	        return 0;
+	}
+	}
+	}
+READ(SOCKET clt_s){
+       int i = 0; int min=0;
+	   FILE*fp = fopen("c:\\test\\data.txt", "r");
+	   if (fp == NULL){
+	   printf("File open error...\n");
+	   return 0;
+	}
+    fscanf(fp, "%d", &i); min=i;
+	while (fscanf(fp, "%d", &i) != EOF) {
+		if (min >= i)
+			min = i;
+	}
+	send(clt_s,(char*)(&min),sizeof(int),0);
+	return 0;
+}
+
+client)
+#include "stdafx.h"
+#pragma comment(lib,"ws2_32")
+#include <winsock2.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+#include <time.h>
+Start(SOCKET tcp_sock);
+Read(SOCKET tcp_sock);
+int main(int argc, char* argv[])
+{
+	WSADATA wsa;
+	WSAStartup(MAKEWORD(2,2),&wsa);
+    int n;
+	SOCKET tcp_sock=socket(AF_INET,SOCK_STREAM,0);
+    if(tcp_sock==INVALID_SOCKET){ 
+		printf("º“ƒœ ø°∑Ø!!");
+		return 0;
+	}
+	int error;
+	sockaddr_in srv_addr;
+	srv_addr.sin_family=AF_INET;
+	srv_addr.sin_port=htons(12345);
+	srv_addr.sin_addr.S_un.S_addr=inet_addr("192.168.10.133");
+	error=connect(tcp_sock,(sockaddr*)&srv_addr,sizeof(srv_addr));
+		if(error==SOCKET_ERROR)
+	{
+		printf("connect error!!!!");
+		return -1;
+	}
+		int k=1;
+		while (1) {
+		system("cls");
+		printf("=== UP&DOWN GAME ===\n");
+		printf("1.∞‘¿”Ω√¿€\n2.∞‘¿”¿¸¿˚\n3.∞‘¿”¡æ∑·\n");
+		printf(">"); scanf("%d", &n);
+		switch (n) {
+		case 1:
+			send(tcp_sock,(char*)&k,sizeof(int),0);
+			Start(tcp_sock);
+			system("pause");
+			continue;
+		case 2:
+			k=2; 
+			send(tcp_sock,(char*)&k,sizeof(int),0);
+			Read(tcp_sock);
+			system("pause");
+			continue;
+		case 3:
+			k=-1;
+			send(tcp_sock,(char*)&k,sizeof(int),0);
+			printf("º“ƒœ º∫∞¯\n");
+	        closesocket(tcp_sock);
+		    WSACleanup();
+		    return 0;
+		}
+	}
+
+}
+Start(SOCKET tcp_sock){
+	    int n,pos,min; int i=0; int j=0; 
+		system("cls");
+     	printf("=== START ===\n");
+		while(1){
+		printf("Input Number -->");
+		scanf("%d", &n); i++;
+		send(tcp_sock,(char*)(&n),sizeof(int),0);
+	    Sleep(50); pos=(int)pos;
+		recv(tcp_sock,(char*)(&pos),sizeof(int),0);
+		if(pos==1){
+			system("cls");
+			printf("=== UP ===\n");
+			continue;
+		}
+		else if(pos==-1){
+			system("cls");
+			printf("=== DOWN ===\n");
+			continue;
+		}
+		else
+		{
+			printf("%d»∏∏∏ø° ∏¬≠üΩ¿¥œ¥Ÿ\n",i);
+		   	recv(tcp_sock,(char*)&min,sizeof(int),0);
+            if(min==i)
+			{
+				printf("√÷∞Ì±‚∑œ¿ª ∞ÊΩ≈«œºÃΩ¿¥œ¥Ÿ!\n");	
+			}
+			break;
+		}
+	}
+	return 0;
+}
+Read(SOCKET tcp_sock) {
+	int min; recv(tcp_sock,(char*)(&min),sizeof(int),0);
+	min=(int)min; printf("√÷∞Ì±‚∑œ¿∫ %d»∏ ¿‘¥œ¥Ÿ\n", min);
+    return 0;
+}

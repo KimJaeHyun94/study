@@ -1,0 +1,111 @@
+#include<stdio.h>
+#include<Windows.h>
+#include<time.h>
+#include<stdlib.h>
+
+int main() {
+
+	printf("===================\n");
+	printf("가위, 바위, 보 게임입니다..\n");
+	printf("4승 or 4패 할 때까지 진행됩니다..\n");
+	printf("주의 : 1~3키 이외의 값이 입력되면 '패'처리 됩니다...\n");
+	printf("올바르게 입력하세요 !!^^\n");
+	printf("\n");
+	printf("시작=Enter키를 누르세요~^^\n");
+	printf("\n===================\n");
+	printf("\n");
+	system("pause");
+	system("cls");
+	srand((unsigned int)time(NULL));
+	int num, com;
+	int i = 0, j = 0, k = 0;
+	while (1) {
+		printf("가위:1, 바위:2, 보:3 :: ");
+		scanf("%d", &num);
+		com = rand() % 3 + 1;
+		if (num != 1 && num != 2 && num != 3)
+		{
+			printf("기권으로 간주되어서 패처리 되었습니다\n");
+			k++;
+			continue;
+		}
+		else {
+			if (com == 3)
+			{
+				printf("컴퓨터는 보를 냈습니다!\n");
+				if (num == 2) {
+					printf("결과는 당신의 패배!\n");
+					k++;
+				}
+				else if (num == 3)
+				{
+					printf("동점입니다!\n");
+					j++;
+				}
+				else
+				{
+					printf("결과는 당신의 승리!\n");
+					i++;
+				}
+			}
+			else if (com == 2)
+			{
+				printf("컴퓨터는 바위를 냈습니다!\n");
+				if (num == 1) {
+					printf("결과는 당신의 패배!\n");
+					k++;
+				}
+				else if (num == 2) {
+					printf("동점입니다!\n");
+					j++;
+				}
+				else {
+					printf("결과는 당신의 승리!\n");
+					i++;
+				}
+			}
+			else
+			{
+				printf("컴퓨터는 가위를 냈습니다\n");
+				if (num == 1) {
+					printf("동점입니다!\n");
+					j++;
+				}
+				else if (num == 2)
+				{
+					printf("결과는 당신의 승리!\n");
+					i++;
+				}
+				else {
+					printf("결과는 당신의 패배!\n");
+					k++;
+				}
+			}
+			printf("----------------\n");
+			printf("현재 %d승 %d무 %d패\n", i, j, k);
+			printf("----------------\n");
+			for (int s = 1; s < 4; s++)
+			{
+				printf("=%d초=\n", s);
+				Sleep(500);
+			}
+		}
+		system("cls");
+		if (i == 4)
+		{
+			printf("********\n");
+			printf("최종 결과\n");
+			printf("당신이 이겻소\n");
+			break;
+		}
+		else if (k == 4)
+		{
+			printf("********\n");
+			printf("최종 결과\n");
+			printf("푸하하 내가 이겼소\n");
+			break;
+		}
+		
+	}
+	
+}

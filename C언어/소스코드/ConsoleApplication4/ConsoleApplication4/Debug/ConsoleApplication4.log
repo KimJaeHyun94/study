@@ -1,0 +1,12 @@
+﻿  ads.c
+c:\users\user\documents\visual studio 2017\projects\consoleapplication4\consoleapplication4\ads.c(185): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.14393.0\ucrt\stdio.h(1269): note: 'scanf' 선언을 참조하십시오.
+c:\users\user\documents\visual studio 2017\projects\consoleapplication4\consoleapplication4\ads.c(331): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.14393.0\ucrt\stdio.h(1269): note: 'scanf' 선언을 참조하십시오.
+c:\users\user\documents\visual studio 2017\projects\consoleapplication4\consoleapplication4\ads.c(337): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.14393.0\ucrt\stdio.h(1269): note: 'scanf' 선언을 참조하십시오.
+c:\users\user\documents\visual studio 2017\projects\consoleapplication4\consoleapplication4\ads.c(349): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.14393.0\ucrt\stdio.h(1269): note: 'scanf' 선언을 참조하십시오.
+c:\users\user\documents\visual studio 2017\projects\consoleapplication4\consoleapplication4\ads.c(324): warning C4101: 'delete' :참조되지 않은 지역 변수입니다.
+c:\users\user\documents\visual studio 2017\projects\consoleapplication4\consoleapplication4\ads.c(174): warning C4715: 'SearchNode': 모든 제어 경로에서 값을 반환하지는 않습니다.
+LINK : fatal error LNK1168: C:\Users\User\documents\visual studio 2017\Projects\ConsoleApplication4\Debug\ConsoleApplication4.exe을(를) 쓰기용으로 열 수 없습니다.

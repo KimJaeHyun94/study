@@ -1,0 +1,95 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+#define EMPTY 0
+struct node {
+	int data;
+	char menu[50];
+	struct node*link;
+};
+typedef struct node Queue;
+Queue*get_node() {
+	Queue*tmp;
+	tmp = (Queue*)malloc(sizeof(Queue));
+	tmp->link = EMPTY;
+	return tmp;
+}
+void Enqueue(Queue**front, Queue**rear, int data, char * menu) {
+	Queue*tmp;
+	tmp = *rear;
+	*rear = get_node();
+	if (*front == EMPTY) {
+		*front = *rear;
+	}
+	strcpy((*rear)->menu, menu);
+	(*rear)->data = data;
+	if (tmp != EMPTY)
+		tmp->link = *rear;
+}
+void Dequeue(Queue**front, Queue**rear) {
+	if (*front == EMPTY)
+	{
+		printf("##에러 메뉴가 없습니다\n");
+		return;
+	}
+	Queue *tmp = *front;
+	*front = tmp->link;
+	printf("메뉴가 처리되었습니다\n");
+	printf("%s %d개 처리되었습니다 \n", tmp->menu, tmp->data);
+	free(tmp);
+	if (*front == EMPTY)
+	{
+		*rear = *front = EMPTY;
+	}
+}
+void print_data(Queue**front) {
+	Queue*tmp;
+	tmp = *front;
+	if (tmp != EMPTY) {
+		while (tmp) {
+			printf("%s / %d그릇\n", tmp->menu, tmp->data);
+			tmp = tmp->link;
+		}
+	}
+	else
+		printf("없습니다\n");
+}
+int main()
+{
+	Queue*front = EMPTY;
+	Queue*rear = EMPTY;
+	int num, n;
+	char menu[50];
+	while (1) {
+		system("cls");
+		printf("1.등록/ 2.처리/ 3밀린주문확인 :");
+		scanf("%d", &n);
+		if (n < 0 || n > 4) {
+			printf("다시 입력해 주세요\n");
+			continue;
+		}
+		switch (n) {
+		case 1:
+			printf("주문내용을 입력하세요! \n");
+			printf("메뉴명 :");
+			getchar();
+			gets(menu);
+			printf("메뉴 갯수 :");
+			scanf("%d", &num);
+			Enqueue(&front, &rear, num, menu);
+			printf("주문되었습니다!\n");
+			system("pause");
+			continue;
+		case 2:
+			Dequeue(&front, &rear);
+			system("pause");
+			continue;
+		case 3:
+			printf("*남은 메뉴*\n");
+			print_data(&front);
+			system("pause");
+			continue;
+		}
+	}
+}

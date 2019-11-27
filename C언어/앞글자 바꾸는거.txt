@@ -1,0 +1,25 @@
+#include<stdio.h>
+void func(char*stn);
+
+int main() {
+	char stn[100];
+	printf("문자열을 입력하세요 :");
+	gets(stn);
+	func(stn);
+	puts(stn);
+}
+void func(char*stn) {
+	int i = 0;
+	while (stn[i] != '\0') {
+		if (stn[0] <= 'z'&&stn[0] >= 'a') {
+			stn[0] -= 32;
+		}
+		else if (stn[i] == ' ') {
+			if (stn[i+1] <= 'z'&&stn[i+1] >= 'a')
+			{
+				stn[i + 1] -= 32;
+			}
+		}
+		i++;
+	}
+}

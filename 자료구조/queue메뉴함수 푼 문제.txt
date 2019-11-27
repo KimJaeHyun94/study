@@ -1,0 +1,98 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<Windows.h>
+#define EMPTY 0
+
+struct node {
+	int data;
+	struct node*link;
+};
+typedef struct node Queue;
+
+Queue*get_node() {
+	Queue*tmp;
+	tmp = (Queue*)malloc(sizeof(Queue));
+	tmp->link = EMPTY;
+	return tmp;
+}
+void Enqueue(Queue**front, Queue**rear, int data) {
+	Queue*tmp;
+	tmp = *rear;
+	*rear = get_node();
+	if (*front == EMPTY) {
+		*front = *rear;
+	}
+	(*rear)->data = data;
+	if (tmp != EMPTY)
+		tmp->link = *rear;
+}
+int Dequeue(Queue**front, Queue**rear) {
+	Queue *tmp;
+	tmp = *front;
+	int num;
+	num = tmp->data;
+	*front = (*front)->link;
+	free(tmp);
+	if (tmp == EMPTY) {
+		(*rear) = EMPTY;
+	}
+	return num;
+}
+void print_data(Queue**front) {
+	Queue*tmp;
+	tmp = *front;
+	if (tmp != EMPTY) {
+		printf("%d\n", tmp->data);
+		tmp = tmp->link;
+		print_data(&tmp);
+	}
+	else
+	{
+		printf("empty data\n");
+	}
+}
+int main()
+{
+	Queue*front = EMPTY;
+	Queue*rear = EMPTY;
+	int num, n;
+	while (1)
+	{
+		system("cls");
+		printf("stack프로그램입니다\n");
+		printf("1. enq\n2. deq\n3. print_data\n4. 종료\n");
+		printf(">>>>>> : ");
+		scanf("%d", &n);
+		if (n < 0 || n>4)
+			continue;
+		switch (n) {
+		case 1:
+			printf("수를 입력하시오 :");
+			scanf("%d", &num);
+			Enqueue(&front, &rear, num);
+			continue;
+		case 2:
+			if (front != EMPTY) {
+				printf("%d\n", Dequeue(&front, &rear));
+			}
+			else {
+				printf("empty data\n");
+			}
+			system("pause");
+			continue;
+		case 3:
+			print_data(&front);
+			system("pause");
+			continue;
+		case 4:
+			printf("모든 공간 해제 후 종료\n");
+			while (front) {
+				Sleep(500);
+				printf("%d\n", Dequeue(&front, &rear));
+			}
+			Sleep(500);
+			printf("empty data\n");
+			return 0;
+		}
+	}
+}

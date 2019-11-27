@@ -1,0 +1,194 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<windows.h>
+#define EMPTY 0
+
+typedef struct node {
+	int data;
+	struct node*llink, *rlink;
+}Tree;
+
+Tree*get_node() {
+	Tree*tmp;
+	tmp = (Tree*)malloc(sizeof(Tree));
+	tmp->llink = EMPTY;
+	tmp->rlink = EMPTY;
+	return tmp;
+}
+void gotoxy(int x, int y) {
+	COORD pos = { x,y};
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+void InsertNode(Tree**root, int data) {
+	if ((*root) == EMPTY)
+	{
+		(*root) = get_node();
+		(*root)->data = data;
+		return;
+	}
+	else if ((*root)->data > data) {
+		InsertNode(&(*root)->llink, data);
+		return;
+	}
+	else if ((*root)->data < data) {
+		InsertNode(&(*root)->rlink, data);
+		return;
+	}
+	else {
+		printf("같은 값이 이미 존재합니다\n");
+	}
+}
+void PreOrder(Tree**root) {
+	printf("%d ", (*root)->data);
+	if ((*root)->llink != EMPTY) {
+		PreOrder(&(*root)->llink);
+	}
+	if ((*root)->rlink != EMPTY) {
+		PreOrder(&(*root)->rlink);
+	}
+}
+void InOrder(Tree**root) {
+	if ((*root)->llink != EMPTY) {
+		InOrder(&(*root)->llink);
+	}
+	printf("%d ", (*root)->data);
+	if ((*root)->rlink != EMPTY) {
+		InOrder(&(*root)->rlink);
+	}
+}
+void PostOrder(Tree**root) {
+	if ((*root)->llink != EMPTY) {
+		PostOrder(&(*root)->llink);
+	}
+	if ((*root)->rlink != EMPTY) {
+		PostOrder(&(*root)->rlink);
+	}
+	printf("%d ", (*root)->data);
+}
+Tree*SearchNode(Tree**root, int data) {
+	Tree*tmp = *root;
+	if (*root == EMPTY) {
+		return NULL;
+	}
+	else if ((*root)->data == data) {
+		return tmp;
+	}
+	else
+		if ((*root)->data > data)
+		{
+			return SearchNode(&(*root)->llink, data);
+		}
+		else if ((*root)->data < data)
+		{
+			return SearchNode(&(*root)->rlink, data);
+		}
+}
+void DeleteNode(Tree**root, int delete) {
+	int num;
+	if (*root == EMPTY) {
+		printf("삭제할 값이 없습니다\n");
+	}
+	else if ((*root)->data == delete) {
+		printf("삭제할 값이 있습니다\n");
+		Tree*tmp = (*root);
+		if ((*root)->llink != EMPTY && (*root)->rlink != EMPTY) {
+			printf("왼쪽 경로는 1번 오른쪽 경로는 2번 :");
+			scanf("%d", &num);
+			if (num == 1) {
+				Tree*rev = tmp->llink;
+				while (rev->rlink) {
+					rev = rev->rlink;
+				}
+				tmp->data = rev->data;
+				DeleteNode(&tmp->llink, rev->data);
+				return;
+			}
+			else if (num == 2) {
+				Tree*rev = tmp->rlink;
+				while (rev->llink) {
+					rev = rev->llink;
+				}
+				tmp->data = rev->data;
+				DeleteNode(&tmp->rlink, rev->data);
+				return;
+			}
+		}
+		else if ((*root)->llink != EMPTY && (*root)->rlink == EMPTY) {
+			(*root) = tmp->rlink;
+			free(tmp);
+		}
+		else if ((*root)->rlink != EMPTY && (*root)->llink == EMPTY) {
+			(*root) = tmp->llink;
+			free(tmp);
+		}
+		else {
+			(*root) = NULL;
+			free(tmp);
+		}
+	}
+	else {
+		if ((*root)->data > delete)
+		{
+			DeleteNode(&(*root)->llink, delete);
+		}
+		else if ((*root)->data < delete)
+		{
+			DeleteNode(&(*root)->rlink, delete);
+		}
+	}
+}
+void Print_data(Tree**root) {
+	Tree*tmp = *root;
+	int x = 13;
+	int y = 0;
+	if ((tmp->llink&&tmp->rlink)) {
+		gotoxy(x-3,2);
+		printf("%d", tmp->data);
+		gotoxy(2,2);
+		printf("%d", tmp->llink->data);
+		gotoxy(6,2);
+		printf("%d", tmp-> rlink->data);
+		tmp = tmp->llink;
+		Print_data(&(*tmp));
+	}
+	else if (tmp->llink && !tmp->rlink) {
+
+	}
+	else if (!tmp->llink&&tmp->rlink)
+	{
+		
+	}
+}
+int main() {
+	Tree*root = EMPTY;
+	int num;
+	int delete;
+	InsertNode(&root, 4); InsertNode(&root, 2); InsertNode(&root, 6);
+	InsertNode(&root, 1); InsertNode(&root, 3); InsertNode(&root, 5);
+	InsertNode(&root, 7);
+	////전위
+	//PreOrder(&root);
+	//printf("\n");
+	////중위
+	//InOrder(&root);
+	//printf("\n");
+	////후위
+	//PostOrder(&root);
+	//printf("\n");
+	////검색
+	//printf("찾는 값을 입력하세요 :");
+	//scanf("%d", &num);
+	//if (SearchNode(&root, num) == NULL) {
+	//	printf("찾는 값이 없습니다\n");
+	//}
+	//else
+	//	printf("찾는 값이 있습니다\n");
+	////삭제
+	//printf("삭제할 값을 입력하시오 :");
+	//scanf("%d", &delete);
+	//DeleteNode(&root, delete);
+
+	//tree로 출력 
+	Print_data(&root);
+}

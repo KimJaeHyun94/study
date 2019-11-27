@@ -1,0 +1,116 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define EMPTY 0
+
+typedef struct node {
+	int data;
+	struct node*llink, *rlink;
+}Double;
+
+Double*get_node() {
+	Double*tmp;
+	tmp = (Double*)malloc(sizeof(Double));
+	tmp->llink = EMPTY;
+	tmp->rlink = EMPTY;
+	return tmp;
+}
+
+void InsertNode(Double**head, int data) {
+	if (*head == EMPTY) {
+		(*head) = get_node();
+		(*head)->data = data;
+	}
+	else if ((*head)->rlink == EMPTY) {
+		(*head)->rlink = get_node();
+		(*head)->rlink->data = data;
+		(*head)->rlink->llink = (*head);
+	}
+	else
+		InsertNode(&(*head)->rlink, data);
+}
+void PrintNode(Double**head)
+{
+	Double*tmp = *head;
+
+	if (head != EMPTY) {
+		while (tmp) {
+			printf("%d\n", tmp->data);
+			tmp = tmp->rlink;
+		}
+	}
+	else
+		printf("노드에 값이 없습니다\n");
+}
+void DeleteNode(Double**head, int delete) {
+	Double*tmp = *head;
+
+	if (*head == EMPTY) {
+		printf("찾는 자료가 없습니다\n");
+		return;
+	}
+	else if ((*head)->data ==delete) {
+		(*head) = tmp->rlink;
+		(*head)->llink = tmp->llink;
+		free(tmp);
+		return;
+	}
+	DeleteNode(&(*head)->rlink, delete);
+}
+void AddNode(Double**head, int num, int add) {
+	Double*tmp = (*head)->rlink;
+	if (*head == EMPTY) {
+		printf("찾는 자료가 없습니다\n");
+		return;
+	}
+	else if ((*head)->data == num) {
+		(*head)->rlink = EMPTY;
+		InsertNode(&(*head), add);
+		(*head)->rlink->rlink = tmp;
+		(*head)->rlink->rlink->llink = (*head)->rlink;
+		return;
+	}
+	AddNode(&(*head)->rlink, num, add);
+}
+Double*SearchNode(Double**head, int data) {
+	Double*tmp = *head;
+	if (*head == EMPTY) {
+		return NULL;
+	}
+	else if ((*head)->data == data) {
+		printf("찾는 자료가 있습니다\n");
+		return tmp;
+	}
+	SearchNode(&(*head)->rlink, data);
+}
+void ChangeNode(Double**head, int data, int change) {
+	Double*tmp = SearchNode(&(*head), data);
+	if (tmp == NULL) {
+		printf("찾는 자료가 없습니다\n");
+	}
+	else {
+		printf("%d 에서 %d로 바뀌었습니다\n", tmp->data, change);
+		tmp->data = change;
+	}
+}
+int main() {
+	Double*head = EMPTY;
+	//입력
+	InsertNode(&head, 10);
+	InsertNode(&head, 20);
+	InsertNode(&head, 30);
+	//출력
+	PrintNode(&head);
+	printf("\n");
+	//삭제
+	DeleteNode(&head, 20);
+	PrintNode(&head);
+	printf("\n");
+	//삽입
+	AddNode(&head, 10, 35);
+	PrintNode(&head);
+	//검색
+	SearchNode(&head, 35);
+	//수정
+	ChangeNode(&head, 35, 40);
+	PrintNode(&head);
+}

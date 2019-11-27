@@ -1,0 +1,43 @@
+#include<stdio.h>
+#include<time.h>
+#include<stdlib.h>
+#include<Windows.h>
+int main() {
+
+	int num, i;
+	int answer;
+	srand((unsigned int)time(NULL));
+	answer = rand() % 100 + 1;
+
+	for (i = 10; i > 0; i--)
+	{
+		printf("-----------------------\n");
+		printf("%d번의 기회가 있습니다\n",i);
+		printf("1~100사이 수 입력 : ");
+		scanf("%d", &num);
+		printf("-----------------------\n");
+		printf("당신의 입력값 : %d\n",num);
+		int j = 1;
+			
+			if (num > answer)
+			{
+				printf("%d번 : 맞춰야 하는 수는 더 낮은 값입니다!\n",j);
+				j++;
+				system("pause");
+				system("cls");
+				continue;
+			}
+			else if (num < answer)
+			{
+				printf("%d번 : 맞춰야 하는 수는 더 높은 값입니다\n",j);
+				j++;
+				system("pause");
+				system("cls");
+			}
+			else
+			{
+				printf("정답입니다\n");
+				break;
+		    }			
+	}
+}

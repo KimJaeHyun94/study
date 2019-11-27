@@ -1,0 +1,163 @@
+#include <stdio.h>
+#include <string.h>
+#include <windows.h>
+#define NUM 100
+
+struct user{
+	int use;
+	char id[8];
+	char password[16];
+};
+
+int addUser(struct user *user, char *inputId, char *inputPassword)
+{
+	int i;
+
+	for(i=0;i<NUM;i++){
+		if(user[i].use==1 && !strcmp(user[i].id,inputId)){
+			printf("사용중인 ID입니다.\n");
+			return 0;
+		}
+	}
+
+	for(i=0;i<NUM;i++){
+		if(user[i].use==0){
+			user[i].use = 1;
+			strcpy(user[i].id, inputId);
+			strcpy(user[i].password, inputPassword);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int checkUser(struct user *user, char *inputId, char *inputPassword)
+{
+	int i;
+
+	for(i=0;i<NUM;i++){
+		if(user[i].use==1 && !strcmp(user[i].id,inputId))
+			if(!strcmp(user[i].password,inputPassword))
+				return 1;
+			else{
+				printf("틀렸습니다!!!\n");
+				return 0;
+			}
+	}
+
+	if(i==NUM)
+		printf("등록되지 않은 ID 입니다.\n");
+
+	return 0;
+}
+
+int delUser(struct user *user, char *inputId, char *inputPassword)
+{
+	int i;
+
+	for(i=0;i<NUM;i++){
+		if(user[i].use==1 && !strcmp(user[i].id,inputId) && !strcmp(user[i].password,inputPassword)){
+			user[i].use = 0;
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
+int main()
+{
+	struct user user[NUM];
+	int option, i;
+	char inputID[8];
+	char inputPassword[16];
+
+	for(i=0;i<NUM;i++)
+		user[i].use = 0;
+
+	while(1) {
+		system("cls");
+		printf("원하는 기능을 선택하세요.\n");
+		printf("1. 로그온 \n");
+		printf("2. 회원 가입\n");
+		printf("3. 회원 탈퇴\n");
+		printf("4. 종료\n");
+		printf("Select...");
+		scanf("%d", &option);
+		fflush(stdin);
+
+		if( option < 0 || option > 4 )
+			continue;
+
+		switch(option){
+		case 1:
+			printf("ID : ");
+			gets(inputID);
+			fflush(stdin);
+			printf("Password : ");
+			gets(inputPassword);
+
+			if(!checkUser(user, inputID, inputPassword)){
+				system("pause");
+				continue;
+			}
+			printf("인증을 통과했습니다.\n");
+			printf("감사합니다.\n");
+			system("pause");
+			break;
+		case 2:
+			printf("ID : ");
+			gets(inputID);
+			fflush(stdin);
+			if(strlen(inputID)<1){
+				printf("ID의 길이가 너무 짧습니다.\n");
+				system("pause");
+				continue;
+			}
+			printf("Password : ");
+			gets(inputPassword);
+			if(strlen(inputPassword)<1){
+				printf("Password의 길이가 너무 짧습니다.\n");
+				system("pause");
+				continue;
+			}
+
+			if(addUser(user, inputID, inputPassword)){
+				printf("\n등록 성공\n");
+				system("pause");
+				continue;
+			}
+			printf("등록 실패\n");
+			system("pause");
+			break;
+		case 3:
+			printf("ID : ");
+			gets(inputID);
+			fflush(stdin);
+			printf("Password : ");
+			gets(inputPassword);
+
+			if(delUser(user, inputID, inputPassword)){
+				printf("\n탈퇴 성공\n");
+				system("pause");
+				continue;
+			}
+			printf("탈퇴 실패\n");
+			system("pause");
+			break;
+		case 4:
+			return 0;
+		case 0:
+			for(i=0;i<NUM;i++){
+				if(user[i].use==1){
+					printf("\n%3d ID: %s\n", i, user[i].id);
+					printf("    PW: %s\n", user[i].password);
+				}
+			}
+			system("pause");
+			break;
+		}
+	}
+
+	return 0;	
+}

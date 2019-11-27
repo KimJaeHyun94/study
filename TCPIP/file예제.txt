@@ -1,0 +1,43 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+#define SIZE 1000
+void init_table(int table[], int size);
+int main() {
+
+	int table[SIZE];
+	int n, data;
+	long pos;
+	FILE*fp = NULL;
+	init_table(table, SIZE);
+
+	if ((fp = fopen("c:\\test\\data.txt", "w")) == NULL)
+	{
+		printf("File error");
+		return 0;
+	}
+	fwrite(table, sizeof(int), SIZE, fp);
+	fclose(fp);
+	if ((fp = fopen("c:\\test\\data.txt", "r")) == NULL)
+	{
+		printf("File error");
+		return 0;
+	}
+	while (1) {
+		printf("파일에서의 위치를 입력하세요 : ");
+		scanf("%d", &n);
+		if (n == -1)break;
+		pos = (long)n*sizeof(int);
+		fseek(fp, pos, SEEK_SET);
+		fread(&data, sizeof(int), 1, fp);
+		printf("%d 위치의 값은 %d입니다\n", n, data);
+	}
+	fclose(fp);
+	return 0;
+}
+void init_table(int table[], int size) {
+	int i;
+	for (i = 0; i < size; i++) {
+		table[i] = i*i;
+	}
+}

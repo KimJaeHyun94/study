@@ -1,0 +1,379 @@
+1)main함수에서 동적할당
+#include<iostream>
+#include<iomanip>
+#include<windows.h>
+#include<string.h>
+using namespace std;
+
+class computer {
+	int kor, mat, eng, sum;
+	double pung;
+public:
+	char name[20];
+	int ss;
+	computer() {}
+	void Choco(char*n) {
+		strcpy(name, n);
+	}
+	void Score() {
+		cout << "국어, 수학, 영어점수를 입력하세요 :";
+		cin >> kor >> mat >> eng;
+	}
+	void Showdata() {}
+	void Sum() {
+		sum = kor + mat + eng;
+		cout << "합계는 : " << sum << endl;
+	}
+	void Pung() {
+		pung = (kor + mat + eng) / (3.0);
+		cout << "평균은 : " << pung << endl;
+	}
+	~computer() {}
+};
+int main() {
+	int num;
+	char name2[20];
+	computer*com = new computer[10];
+	int i = 0;
+	while (1) {
+		system("cls");
+		cout << "1. 학생이름 입력" << endl << "2. 성적 3과목 입력" << endl << "3. 학생이름 출력" << endl << "4. 합계 출력" << endl << "5. 평균 출력" << endl << "6. 종료" << endl;
+		cin >> num;
+		switch (num) {
+		case 1:
+			system("cls");
+			cout << "이름 : ";
+			cin >> name2;
+			if (i >=10) {
+				cout << "학생 초과입니다!" << endl;
+				system("pause");
+				break;
+			}
+			else {
+				if (i == 0) {
+					com[i].Choco(name2);
+					i++;
+				}
+				else {
+					bool exist = FALSE;
+					for (int k = 0; k < i; k++) {
+						if (strcmp(com[k].name, name2) == 0)
+						{
+							exist = TRUE;
+							cout << "같은 이름이 있습니다!" << endl;
+							break;
+						}
+					}
+					if (!exist) {
+						com[i].Choco(name2);
+						i++;
+						system("pause");
+						break;
+					}
+				}
+			}
+			system("pause");
+			break;
+		case 2:
+			if (i == 0) {
+				cout << "등록된 사람이 없습니다!" << endl;
+			}
+			else {
+				system("cls");
+				cout << "이름을 입력하세요" << endl;
+				cin >> name2;
+				bool Exist = FALSE;
+				for (int k = 0; k <= i; k++) {
+					if (strcmp(com[k].name, name2) == 0) {
+						com[k].Score();
+						com[k].ss = 1;
+						Exist = TRUE;
+						break;
+					}
+				}
+				if (!Exist) {
+					cout << "맞는 사람이 없습니다!" << endl;
+				}
+				system("pause");
+				break;
+			}
+			system("pause");
+			continue;
+		case 3:
+			if (i == 0) {
+				cout << "등록된 학생이 없습니다" << endl;
+			}
+			else {
+				system("cls");
+				for (int k = 0; k < i; k++) {
+					cout << k + 1 << "번째 학생 : " << com[k].name << endl;
+				}
+			}
+			system("pause");
+			continue;
+		case 4:
+			system("cls");
+			cout << "이름을 입력하세요" << endl;
+			cin >> name2;
+			if (i == 0) {
+				cout << "등록된 사람이 없습니다!" << endl;
+			}
+			else {
+				bool Exist = FALSE;
+				for (int k = 0; k <= i; k++) {
+					if (strcmp(com[k].name, name2) == 0) {
+						if (com[k].ss == 1) {
+							com[k].Sum();
+							Exist = TRUE;
+							break;
+						}
+						else {
+							cout << "성적을 입력하세요" << endl;
+							Exist = TRUE;
+						}
+					}
+				}
+				if (!Exist) {
+					cout << "맞는 사람이 없습니다!" << endl;
+				}
+				system("pause");
+				break;
+			}
+			system("pause");
+			continue;
+		case 5:
+			system("cls");
+			cout << "이름을 입력하세요" << endl;
+			cin >> name2;
+			if (i == 0) {
+				cout << "등록된 사람이 없습니다!" << endl;
+			}
+			else {
+				bool Exist = FALSE;
+				for (int k = 0; k <= i; k++) {
+					if (strcmp(com[k].name, name2) == 0) {
+						if (com[k].ss == 1) {
+							com[k].Pung();
+							Exist = TRUE;
+							break;
+						}
+						else {
+							cout << "성적을 입력하세요" << endl;
+							Exist = TRUE;
+						}
+					}
+				}
+				if (!Exist) {
+					cout << "맞는 사람이 없습니다!" << endl;
+				}
+				system("pause");
+				break;
+			}
+			system("pause");
+			continue;
+		case 6:
+			system("cls");
+			Sleep(500);
+			cout << "동적할당 해제!" << endl;
+			Sleep(500);
+			cout << "종료 3" << endl;
+			Sleep(500);
+			cout << "종료 2" << endl;
+			Sleep(500);
+			cout << "종료 1" << endl;
+			delete[]com;
+			return 0;
+		default:
+			cout << "1~6까지의 수를 입력하시오~" << endl;
+			system("pause");
+			continue;
+		}
+	}
+}
+
+2)클래스에서 동적 할당
+#include<iostream>
+#include<iomanip>
+#include<windows.h>
+#include<string.h>
+using namespace std;
+
+class computer {
+	int kor, mat, eng,sum;
+	double pung;
+	int i = 0;
+	computer*cc;
+	char name[20];
+	int ss;
+public:
+	computer() {}
+	computer(int people){
+		cc = new computer[people];
+	}
+	void Choco(char*n) {
+		if (i >= 10) {
+			cout << "학생 초과입니다!" << endl;
+		}
+		else {
+			if (i == 0) {
+				strcpy(cc[0].name, n);
+				i++;
+			}
+			else {
+				bool exist = FALSE;
+				for (int k = 0; k < i; k++) {
+					if (strcmp(cc[k].name, n) == 0)
+					{
+						exist = TRUE;
+						cout << "같은 이름이 있습니다!" << endl;
+						break;
+					}
+				}
+				if (!exist) {
+					strcpy(cc[i].name, n);
+					i++;
+				}
+			}
+		}
+	}
+	void Score(char*n) {
+		if (i == 0) {
+			cout << "등록된 사람이 없습니다!" << endl;
+		}
+		else {
+			bool Exist = FALSE;
+			for (int k = 0; k <= i; k++) {
+				if (strcmp(cc[k].name, n) == 0) {
+					cout << "성적을 입력하세요 :";
+					cin >> cc[k].eng >> cc[k].kor >> cc[k].mat;
+					cc[k].ss = 1;
+					Exist = TRUE;
+					break;
+				}
+			}
+			if (!Exist) {
+				cout << "맞는 사람이 없습니다!" << endl;
+			}
+		}
+	}
+	void Showdata() {
+		if (i == 0) {
+			cout << "등록된 학생이 없습니다" << endl;
+		}
+		else {
+			system("cls");
+			for (int k = 0; k < i; k++) {
+				cout << k + 1 << "번째 학생 : " << cc[k].name << endl;
+			}
+		}
+	}
+	void Sum(char*n) {
+		
+		if (i == 0) {
+			cout << "등록된 사람이 없습니다!" << endl;
+		}
+		else {
+			bool Exist = FALSE;
+			for (int k = 0; k <= i; k++) {
+				cc[k].sum = cc[k].kor + cc[k].mat + cc[k].eng;
+				if (strcmp(cc[k].name, n) == 0) {
+					if (cc[k].ss == 1) {
+						cout << "합계는 : " << cc[k].sum << endl;
+						Exist = TRUE;
+						break;
+					}
+					else {
+						cout << "성적을 입력하세요" << endl;
+						Exist = TRUE;
+					}
+				}
+			}
+			if (!Exist) {
+				cout << "맞는 사람이 없습니다!" << endl;
+			}
+		}
+	}
+	void Pung(char*n) {
+		if (i == 0) {
+			cout << "등록된 사람이 없습니다!" << endl;
+		}
+		else {
+			bool Exist = FALSE;
+			for (int k = 0; k <= i; k++) {
+				if (strcmp(cc[k].name, n) == 0) {
+					cc[k].pung = (cc[k].kor + cc[k].mat + cc[k].eng) / (3.0);
+					if (cc[k].ss == 1) {
+						cout << "평균은 : " << cc[k].pung << endl;
+						Exist = TRUE;
+						break;
+					}
+					else {
+						cout << "성적을 입력하세요" << endl;
+						Exist = TRUE;
+					}
+				}
+			}
+			if (!Exist) {
+				cout << "맞는 사람이 없습니다!" << endl;
+			}
+		}
+	}
+	~computer() {
+		delete[]cc;
+	}
+};
+int main() {
+	int num;
+	char name2[20];
+	computer com(10);
+	int i = 0;
+	while (1) {
+		system("cls");
+		cout << "1. 학생이름 입력" << endl << "2. 성적 3과목 입력" << endl << "3. 학생이름 출력" << endl << "4. 합계 출력" << endl << "5. 평균 출력" << endl << "6. 종료" << endl;
+		cin >> num;
+		switch (num) {
+		case 1:
+			system("cls");
+			cout << "이름 : ";
+			cin >> name2;
+			com.Choco(name2);
+			system("pause");
+			break;
+		case 2:
+			system("cls");
+			cout << "이름 : ";
+			cin >> name2;
+			com.Score(name2);
+			system("pause");
+			continue;
+		case 3:
+			com.Showdata();
+			system("pause");
+			continue;
+		case 4:
+			system("cls");
+			cout << "이름 : ";
+			cin >> name2;
+			com.Sum(name2);
+			system("pause");
+			continue;
+		case 5:
+			system("cls");
+			cout << "이름 : ";
+			cin >> name2;
+			com.Pung(name2);
+			system("pause");
+			continue;
+		case 6:
+			system("cls");
+			cout << "종료됩니다" << endl;
+			exit(1);
+		default:
+			cout << "1~6까지의 수를 입력하시오~" << endl;
+			system("pause");
+			continue;
+		}
+	}
+}
+
+
